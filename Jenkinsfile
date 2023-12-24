@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    parameters {
-        booleanParam(name: 'skip_CODE_ANALYSIS_with_SONARQUBE', defaultValue: true, description: 'Set to true to skip the test stage')
-    }
     tools {
         maven "MAVEN3"
         jdk "OracleJDK8"
@@ -49,7 +46,6 @@ pipeline {
           }
 
           steps {
-            execute_stage('CODE_ANALYSIS_with_SONARQUBE', params.skip_CODE_ANALYSIS_with_SONARQUBE)
             withSonarQubeEnv('sonarserver') {
                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                    -Dsonar.projectName=vprofile-repo \
@@ -61,7 +57,7 @@ pipeline {
                    -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
             }
 
-            timeout(time: 10, unit: 'MINUTES') {
+            timeout(time: 20, unit: 'MINUTES') {
                waitForQualityGate abortPipeline: true
             }
           }
