@@ -54,6 +54,8 @@ pipeline {
         stage('CODE_ANALYSIS_with_SONARQUBE') {
             environment {
                 scannerHome = tool 'sonarscanner'
+                JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64' // Update this path to the location of Java 11
+                PATH = "${JAVA_HOME}/bin:${env.PATH}"
             }
 
             steps {
