@@ -61,7 +61,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('sonarserver') {
-                        #sh """${scannerHome}/bin/sonar-scanner \
+                        // sh """${scannerHome}/bin/sonar-scanner \
                         sh """${JAVA_HOME}/bin/java -jar ${scannerHome}/lib/sonar-scanner-cli-*.jar \
                             -Dsonar.projectKey=vprofile \
                             -Dsonar.projectName=vprofile-repo \
