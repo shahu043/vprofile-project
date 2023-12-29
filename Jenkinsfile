@@ -54,27 +54,23 @@ pipeline {
         stage('CODE_ANALYSIS_with_SONARQUBE') {
             environment {
                 scannerHome = tool "${SONARSCANNER}"
-                JAVA_HOME = '/usr/lib/jvm/java-11-openjdk-amd64' // Update this path to the location of Java 11
-                PATH = "${JAVA_HOME}/bin:${env.PATH}"
             }
 
             steps {
-                script {
                     withSonarQubeEnv("${SONARSERVER}") {
                         // sh """${scannerHome}/bin/sonar-scanner \
-                        sh """${JAVA_HOME}/bin/java -jar ${scannerHome}/lib/sonar-scanner-cli-*.jar \
+                        sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                             -Dsonar.projectKey=vprofile \
-                            -Dsonar.projectName=vprofile-repo \
+                            -Dsonar.projectName=vprofile \
                             -Dsonar.projectVersion=1.0 \
                             -Dsonar.sources=src/ \
                             -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
                             -Dsonar.junit.reportsPath=target/surefire-reports/ \
                             -Dsonar.jacoco.reportsPath=target/jacoco.exec \
-                            -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml"""
+                            -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
                     }
-                }
 
-                timeout(time: 9, unit: 'MINUTES') {
+                timeout(time: 10, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
                 }
             }
