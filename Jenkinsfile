@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
- /*   tools {
+    tools {
         maven "MAVEN3"
         jdk "OracleJDK11"
-    } */
+    } 
 
     environment {
         SNAP_REPO = 'profile-snapshot'
