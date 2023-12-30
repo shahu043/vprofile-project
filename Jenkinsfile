@@ -1,10 +1,14 @@
+def COLOR_MAP = [
+    'SUCCESS': 'good', 
+    'FAILURE': 'danger',
+]
 pipeline {
     agent any
 
     tools {
         maven "MAVEN3"
         jdk "OracleJDK11"
-    } 
+    }   
 
     environment {
         SNAP_REPO = 'profile-snapshot'
@@ -96,6 +100,14 @@ pipeline {
                     )
                 }
             }
+        }
+    }
+    post {
+    always {
+            echo 'Slack Notifications.'
+            slackSend channel: '#ci-jenkins-devops',
+                color: COLOR_MAP[currentBuild.currentResult],
+                message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URL}"
         }
     }
 }
