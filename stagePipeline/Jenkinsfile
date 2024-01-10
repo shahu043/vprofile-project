@@ -22,6 +22,9 @@ pipeline {
         NEXUS_LOGIN = 'nexuslogin'
         SONARSERVER = 'sonarserver'
         SONARSCANNER = 'sonarscanner'
+        registryCredential = 'ecr:ap-south-1:awscreds'
+        appRegistry = '808372452493.dkr.ecr.ap-south-1.amazonaws.com/vprofileimg'
+        vprofileRegistry = "https://808372452493.dkr.ecr.ap-south-1.amazonaws.com"
     }
 
     stages {
@@ -98,6 +101,23 @@ pipeline {
                              type: 'war']
                         ]
                     )
+                }
+            }
+        }
+        stage('Build app image') {
+            steps {
+                script {
+                    dockerImage = docker.build( appRegistry + ":$BUILD_NUMBER", "./Docker-files/app/multistage/")
+                }
+            }
+        }
+        stage('Upload imahge to ECR'){
+            steps {
+                script {
+                    docker.withRegistry( vprofileRegistry, registryCredential) {
+                        dockerImage.push("$BUILD_NUMBER")
+                        dockerImage.push('latest')
+                    }
                 }
             }
         }
